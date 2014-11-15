@@ -9,10 +9,11 @@ class Table:
         self.__read_config__()
         self.__init__seats()
         self.button = self.conf["button"]
-        self.big_blind = self.conf["big_blind"]
-        self.small_blind = self.conf["small_blind"]
+        self.big_blind_amount = self.conf["big_blind_amount"]
+        self.small_blind_amount = self.conf["small_blind_amount"]
         self.rake = self.conf["rake"]
         self.deck = Deck()
+        self.pot = 0
 
 
     def __init__seats(self):
@@ -31,7 +32,26 @@ class Table:
     def __read_config__(self):
         self.conf = json.loads(open("table_config.json").read())        
 
+    def take_blinds(self):
+        button = int(self.button)
+        current_seat = button
+        small_blind_taken = False
+        big_blind_taken = False
+        while not big_blind_taken:
+            current_seat = current_seat + 1 
+            if current_seat == 11:
+                current_seat = 1
+            if self.seats[current_seat]:
+                if small_blind_taken:
+                    self.pot = self.pot + self.seats[current_seat].take_money(self.big_blind_amount)
+                    big_blind_taken = True
+                else:
+                    self.pot = self.pot + self.seats[current_seat].take_money(self.small_blind_amount)
+                    small_blind_taken = True
+            
+
     def deal(self):
+        self.take_blinds()
         self.deck.new_deck()
         for card in range(0, 2):
             for player in self.seats:
@@ -47,6 +67,8 @@ class Table:
 
 if __name__ == "__main__":
     t = Table()
+    t.take_blinds()
+    #print t.pot
     t.deal()
-    print t.seats
+    #print t.seats
     

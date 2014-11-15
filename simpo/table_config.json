@@ -1,8 +1,8 @@
 {
   "rake" : 0,
-  "button" : "1",
-  "big_blind" : 2,
-  "small_blind" : 1,
+  "button" : 1,
+  "big_blind_amount" : 2,
+  "small_blind_amount" : 1,
   "seats":
   {
     "1" : {"name" : "Harry", "stack" : 200},
